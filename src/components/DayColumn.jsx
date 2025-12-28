@@ -13,17 +13,19 @@ function DayColumn({ date, blocks, onBlockClick, hourHeight }) {
   sortedBlocks.forEach((block, index) => {
     const startDate = new Date(block.startTime)
     const endDate = new Date(block.endTime)
-    const startMinutes = startDate.getHours() * 60 + startDate.getMinutes()
-    const endMinutes = endDate.getHours() * 60 + endDate.getMinutes()
     
-    // Calculate duration, ensuring it doesn't exceed 24 hours
-    let duration = endMinutes - startMinutes
-    if (duration < 0) {
-      // Handle case where end time is next day (shouldn't happen but just in case)
-      duration = (24 * 60) - startMinutes + endMinutes
-    }
+    // Get the day start (00:00 of the current day column)
+    const dayStart = new Date(date)
+    dayStart.setHours(0, 0, 0, 0)
     
-    // Base position from start time
+    // Calculate minutes from start of day
+    const startMinutes = Math.max(0, (startDate - dayStart) / (1000 * 60))
+    const endMinutes = Math.min(24 * 60, (endDate - dayStart) / (1000 * 60))
+    
+    // Calculate duration within this day
+    const duration = endMinutes - startMinutes
+    
+    // Base position from start time (relative to day start)
     const baseTopPosition = (startMinutes / 60) * hourHeight
     let baseHeight = (duration / 60) * hourHeight
     

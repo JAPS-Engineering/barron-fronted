@@ -1,8 +1,12 @@
 // API Configuration
-export const API_BASE_URL = "http://localhost:8000"
+// En desarrollo, usar ruta relativa para aprovechar el proxy de Vite
+// En producción, usar la URL completa del backend
+export const API_BASE_URL = import.meta.env.PROD 
+  ? "http://localhost:8000" 
+  : ""
 
-// Machine IDs
-export const MACHINE_IDS = Array.from({ length: 10 }, (_, i) => `Cortadora ${i + 1}`)
+// Machine IDs - Actualizados para coincidir con las máquinas del backend
+export const MACHINE_IDS = ['Linea_1', 'Linea_2']
 
 // Time slots for the day (24 hours)
 export const HOURS = Array.from({ length: 24 }, (_, i) => i)

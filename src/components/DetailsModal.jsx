@@ -55,13 +55,53 @@ function DetailsModal({ block, isOpen, onClose }) {
             </div>
           </div>
 
-          {/* Product Name (if production) */}
+          {/* Product Name / OT ID (if production) */}
           {isProduction && (
             <div className="flex items-start space-x-3">
               <Package className="text-gray-400 mt-1" size={20} />
               <div>
-                <div className="text-sm text-gray-500">Producto</div>
-                <div className="font-semibold">{block.productName}</div>
+                <div className="text-sm text-gray-500">Orden de Trabajo</div>
+                <div className="font-semibold">{block.productName || block.id}</div>
+              </div>
+            </div>
+          )}
+
+          {/* Format (if production) */}
+          {isProduction && block.format && (
+            <div className="flex items-start space-x-3">
+              <Hash className="text-gray-400 mt-1" size={20} />
+              <div>
+                <div className="text-sm text-gray-500">Formato</div>
+                <div className="font-semibold">{block.format}</div>
+              </div>
+            </div>
+          )}
+
+          {/* Due Date (if production) */}
+          {isProduction && block.due !== undefined && (
+            <div className="flex items-start space-x-3">
+              <Calendar className="text-gray-400 mt-1" size={20} />
+              <div>
+                <div className="text-sm text-gray-500">Fecha Compromiso</div>
+                <div className="font-semibold">
+                  {block.due} horas desde inicio
+                  {block.onTime !== undefined && (
+                    <span className={`ml-2 ${block.onTime ? 'text-green-600' : 'text-red-600'}`}>
+                      {block.onTime ? '✓ A tiempo' : '⚠ Atrasado'}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Extra Quantity (if production) */}
+          {isProduction && block.qtyExtra !== undefined && block.qtyExtra > 0 && (
+            <div className="flex items-start space-x-3">
+              <Hash className="text-gray-400 mt-1" size={20} />
+              <div>
+                <div className="text-sm text-gray-500">Cantidad Extra</div>
+                <div className="font-semibold">{block.qtyExtra.toLocaleString()} unidades</div>
               </div>
             </div>
           )}

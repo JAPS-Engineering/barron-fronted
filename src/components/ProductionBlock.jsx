@@ -15,6 +15,9 @@ function ProductionBlock({ block, onClick, hourHeight, topPosition, blockHeight,
     : ((endDate.getHours() * 60 + endDate.getMinutes()) - (startDate.getHours() * 60 + startDate.getMinutes())) / 60 * hourHeight
   
   const isProduction = block.type === 'PRODUCTION'
+  const isContinuation = block.isContinuation || false
+  const isPartial = block.isPartial || false
+  
   const bgColor = isProduction 
     ? 'bg-blue-300 hover:bg-blue-400' 
     : 'bg-gray-400 hover:bg-gray-500'
@@ -29,7 +32,7 @@ function ProductionBlock({ block, onClick, hourHeight, topPosition, blockHeight,
     <div
       className={`absolute left-1 right-1 rounded-md ${bgColor} ${textColor} ${padding} cursor-pointer transition-all shadow-sm border border-opacity-20 z-30 overflow-hidden ${
         isProduction ? 'border-blue-400' : 'border-gray-500'
-      }`}
+      } ${isContinuation ? 'border-l-4 border-l-blue-600' : ''} ${isPartial ? 'border-r-4 border-r-blue-600' : ''}`}
       style={{
         top: `${calculatedTopPosition}px`,
         height: `${finalHeight}px`,
@@ -42,16 +45,27 @@ function ProductionBlock({ block, onClick, hourHeight, topPosition, blockHeight,
       }}
       onClick={() => onClick(block)}
     >
+      {isContinuation && (
+        <div className="text-xs opacity-60 italic mb-0.5 flex-shrink-0">
+          ...continuación
+        </div>
+      )}
       <div className="text-xs font-semibold truncate flex-shrink-0">
-        {isProduction ? block.productName : block.description}
+        {isProduction ? (block.productName || block.id) : block.description}
       </div>
       {isProduction && !isSmallBlock && (
         <div className="text-xs mt-0.5 opacity-90 truncate flex-shrink-0">
-          {block.quantity.toLocaleString()} unidades
+          {block.quantity ? `${block.quantity.toLocaleString()} unidades` : block.id}
+        </div>
+      )}
+      {isProduction && block.format && !isSmallBlock && (
+        <div className="text-xs mt-0.5 opacity-75 truncate flex-shrink-0">
+          Formato: {block.format}
         </div>
       )}
       <div className="text-xs mt-0.5 opacity-75 truncate flex-shrink-0">
         {format(startDate, 'HH:mm', { locale: es })} - {format(endDate, 'HH:mm', { locale: es })}
+        {isPartial && ' ...'}
       </div>
     </div>
   )

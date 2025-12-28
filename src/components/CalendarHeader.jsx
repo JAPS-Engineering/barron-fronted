@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Filter } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Filter, Terminal } from 'lucide-react'
 import { format, addDays, subDays, isToday, isSameDay } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { MACHINE_IDS, VIEW_MODES } from '../utils/constants'
@@ -14,7 +14,8 @@ function CalendarHeader({
   visibleMachines,
   onVisibleMachinesChange,
   individualMachine,
-  onIndividualMachineChange
+  onIndividualMachineChange,
+  onConsoleClick
 }) {
   const goToToday = () => {
     onDateChange(new Date())
@@ -91,26 +92,35 @@ function CalendarHeader({
         {/* View Mode and Filters */}
         <div className="flex items-center justify-between">
           {/* View Mode Toggle */}
-          <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
+          <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => onViewModeChange(VIEW_MODES.DAILY)}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  viewMode === VIEW_MODES.DAILY
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                Vista Diaria
+              </button>
+              <button
+                onClick={() => onViewModeChange(VIEW_MODES.INDIVIDUAL)}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  viewMode === VIEW_MODES.INDIVIDUAL
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                Vista Individual
+              </button>
+            </div>
             <button
-              onClick={() => onViewModeChange(VIEW_MODES.DAILY)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                viewMode === VIEW_MODES.DAILY
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800'
-              }`}
+              onClick={onConsoleClick}
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors text-sm font-medium text-gray-700"
             >
-              Vista Diaria
-            </button>
-            <button
-              onClick={() => onViewModeChange(VIEW_MODES.INDIVIDUAL)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                viewMode === VIEW_MODES.INDIVIDUAL
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800'
-              }`}
-            >
-              Vista Individual
+              <Terminal size={18} />
+              <span>Consola</span>
             </button>
           </div>
 

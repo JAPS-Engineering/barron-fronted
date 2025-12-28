@@ -3,7 +3,8 @@ import CalendarHeader from './CalendarHeader'
 import MachineColumn from './MachineColumn'
 import DayColumn from './DayColumn'
 import DetailsModal from './DetailsModal'
-import { useProductionData } from '../hooks/useProductionData'
+import ConsoleModal from './ConsoleModal'
+import { useProductionData, fetchScheduleLogs } from '../hooks/useProductionData'
 import { MACHINE_IDS, VIEW_MODES, getSantiagoTimeComponents } from '../utils/constants'
 
 function Layout() {
@@ -12,6 +13,9 @@ function Layout() {
   const [selectedMachines, setSelectedMachines] = useState([...MACHINE_IDS])
   const [selectedBlock, setSelectedBlock] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isConsoleOpen, setIsConsoleOpen] = useState(false)
+  const [consoleLogs, setConsoleLogs] = useState([])
+  const [loadingLogs, setLoadingLogs] = useState(false)
   const [visibleMachineIndex, setVisibleMachineIndex] = useState(0)
 
   // For individual view, select first machine by default
@@ -75,6 +79,26 @@ function Layout() {
     }
   }
 
+  // Handle console click
+  const handleConsoleClick = async () => {
+    setIsConsoleOpen(true)
+    setLoadingLogs(true)
+    try {
+      const logs = await fetchScheduleLogs()
+      setConsoleLogs(logs)
+    } catch (error) {
+      console.error('Error loading logs:', error)
+      setConsoleLogs(['Error al cargar los logs. Por favor, intente nuevamente.'])
+    } finally {
+      setLoadingLogs(false)
+    }
+  }
+
+  // Handle console close
+  const handleConsoleClose = () => {
+    setIsConsoleOpen(false)
+  }
+
   // Scroll to current time on load (using Santiago time)
   useEffect(() => {
     const { hour: currentHour, minute: currentMinute } = getSantiagoTimeComponents()
@@ -106,6 +130,7 @@ function Layout() {
         visibleMachines={visibleMachines}
         individualMachine={individualMachine}
         onIndividualMachineChange={setIndividualMachine}
+        onConsoleClick={handleConsoleClick}
       />
 
       {/* Calendar Grid */}
@@ -195,10 +220,43 @@ function Layout() {
                     const nextDay = new Date(dayDate)
                     nextDay.setDate(nextDay.getDate() + 1)
                     
-                    const dayBlocks = data.filter((block) => {
-                      const blockDate = new Date(block.startTime)
-                      return blockDate >= dayDate && blockDate < nextDay
-                    })
+                    // Filter blocks that intersect with this day
+                    // A block should be shown if:
+                    // 1. It starts in this day, OR
+                    // 2. It ends in this day, OR
+                    // 3. It spans across this day (starts before and ends after)
+                    const dayBlocks = data
+                      .map((block) => {
+                        const blockStart = new Date(block.startTime)
+                        const blockEnd = new Date(block.endTime)
+                        
+                        // Check if block intersects with this day
+                        const startsInDay = blockStart >= dayDate && blockStart < nextDay
+                        const endsInDay = blockEnd > dayDate && blockEnd <= nextDay
+                        const spansDay = blockStart < dayDate && blockEnd > nextDay
+                        
+                        if (startsInDay || endsInDay || spansDay) {
+                          // Create a modified block for this day
+                          const modifiedBlock = { ...block }
+                          
+                          // If block starts before this day, adjust start to beginning of day
+                          if (blockStart < dayDate) {
+                            modifiedBlock.startTime = dayDate.toISOString()
+                            modifiedBlock.isContinuation = true // Mark as continuation
+                          }
+                          
+                          // If block ends after this day, adjust end to end of day
+                          if (blockEnd > nextDay) {
+                            modifiedBlock.endTime = nextDay.toISOString()
+                            modifiedBlock.isPartial = true // Mark as partial
+                          }
+                          
+                          return modifiedBlock
+                        }
+                        
+                        return null
+                      })
+                      .filter(Boolean)
 
                     return (
                       <DayColumn
@@ -222,6 +280,13 @@ function Layout() {
         block={selectedBlock}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+      />
+
+      {/* Console Modal */}
+      <ConsoleModal
+        isOpen={isConsoleOpen}
+        onClose={handleConsoleClose}
+        logs={consoleLogs}
       />
     </div>
   )
