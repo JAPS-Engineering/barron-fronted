@@ -1,9 +1,11 @@
 // API Configuration
 // En desarrollo, usar ruta relativa para aprovechar el proxy de Vite
-// En producción, usar la URL completa del backend
-export const API_BASE_URL = import.meta.env.PROD 
-  ? "http://localhost:8000" 
-  : ""
+// En producción, usar la variable de entorno VITE_API_BASE_URL o la URL por defecto
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (
+  import.meta.env.PROD 
+    ? "https://barron-backend.onrender.com" 
+    : ""
+)
 
 // Machine IDs - Actualizados para coincidir con las máquinas del backend
 export const MACHINE_IDS = ['Linea_1', 'Linea_2']
