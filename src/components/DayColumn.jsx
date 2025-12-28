@@ -73,7 +73,7 @@ function DayColumn({ date, blocks, onBlockClick, hourHeight }) {
   return (
     <div className="flex flex-col border-r border-gray-300 flex-1">
       {/* Day Header */}
-      <div className="bg-gray-100 border-b border-gray-300 p-3 font-semibold text-sm text-gray-700 sticky top-0 z-10 flex-shrink-0">
+      <div className="bg-gray-100 border-b border-gray-300 p-3 font-semibold text-sm text-gray-700 sticky top-0 z-50 flex-shrink-0">
         {date.toLocaleDateString('es-ES', {
           weekday: 'short',
           day: 'numeric',

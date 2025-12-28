@@ -4,6 +4,7 @@ import MachineColumn from './MachineColumn'
 import DayColumn from './DayColumn'
 import DetailsModal from './DetailsModal'
 import ConsoleModal from './ConsoleModal'
+import { MobileDailyView, MobileIndividualView } from './MobileScheduleView'
 import { useProductionData, fetchScheduleLogs } from '../hooks/useProductionData'
 import { MACHINE_IDS, VIEW_MODES, getSantiagoTimeComponents } from '../utils/constants'
 
@@ -140,8 +141,34 @@ function Layout() {
             <div className="text-gray-500">Cargando datos...</div>
           </div>
         ) : (
-          <div className="h-full overflow-hidden">
-            {viewMode === VIEW_MODES.DAILY ? (
+          <>
+            {/* Mobile View (visible on small screens) */}
+            <div className="md:hidden h-full overflow-y-auto">
+              {viewMode === VIEW_MODES.DAILY ? (
+                <MobileDailyView
+                  machines={visibleMachines}
+                  blocks={data}
+                  onBlockClick={handleBlockClick}
+                  currentDate={currentDate}
+                />
+              ) : (
+                <MobileIndividualView
+                  days={Array.from({ length: 7 }, (_, i) => {
+                    const dayDate = new Date(currentDate)
+                    dayDate.setDate(dayDate.getDate() + i)
+                    dayDate.setHours(0, 0, 0, 0)
+                    return dayDate
+                  })}
+                  blocks={data}
+                  onBlockClick={handleBlockClick}
+                  currentDate={currentDate}
+                />
+              )}
+            </div>
+
+            {/* Desktop View (hidden on small screens) */}
+            <div className="hidden md:block h-full overflow-hidden">
+              {viewMode === VIEW_MODES.DAILY ? (
               <div className="flex h-full overflow-y-auto" id="calendar-container">
                 {/* Time column (left side) - inside scrollable container */}
                 <div className="w-20 bg-gray-50 border-r border-gray-300 sticky left-0 z-10 flex flex-col flex-shrink-0">
@@ -270,8 +297,9 @@ function Layout() {
                   })}
                 </div>
               </div>
-            )}
-          </div>
+              )}
+            </div>
+          </>
         )}
       </div>
 

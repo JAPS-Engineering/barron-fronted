@@ -101,4 +101,3 @@ function ConsoleModal({ isOpen, onClose, logs = [] }) {
 }
 
 export default ConsoleModal
-

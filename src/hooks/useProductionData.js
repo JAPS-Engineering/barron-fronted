@@ -24,40 +24,35 @@ export async function fetchProductionData(date, machineId = null) {
 }
 
 // Datos de testeo ampliados para el endpoint de schedule
-// Con más OTs para generar más contenido en el calendario
+// Usando el nuevo formato optimizado con múltiples productos por OT
 const datosTesteo = {
   orders: [
-    // Día 1 - OTs urgentes
-    { id: "OT1001", due: 12, qty: 800, cluster: 5, format: "A" },
-    { id: "OT1002", due: 18, qty: 500, cluster: 4, format: "B" },
-    { id: "OT1003", due: 20, qty: 700, cluster: 3, format: "A" },
-    { id: "OT1004", due: 28, qty: 1200, cluster: 2, format: "C" },
-    { id: "OT1005", due: 30, qty: 600, cluster: 4, format: "B" },
-    // Día 2-3
-    { id: "OT1006", due: 40, qty: 1500, cluster: 1, format: "A" },
-    { id: "OT1007", due: 45, qty: 900, cluster: 2, format: "C" },
-    { id: "OT1008", due: 50, qty: 1100, cluster: 5, format: "B" },
-    { id: "OT1009", due: 55, qty: 750, cluster: 3, format: "A" },
-    { id: "OT1010", due: 60, qty: 1300, cluster: 4, format: "C" },
-    // Día 4-5
-    { id: "OT1011", due: 72, qty: 950, cluster: 2, format: "B" },
-    { id: "OT1012", due: 80, qty: 1400, cluster: 5, format: "A" },
-    { id: "OT1013", due: 85, qty: 650, cluster: 3, format: "C" },
-    { id: "OT1014", due: 90, qty: 1050, cluster: 4, format: "A" },
-    { id: "OT1015", due: 95, qty: 850, cluster: 1, format: "B" },
-    // Día 6-7
-    { id: "OT1016", due: 110, qty: 1200, cluster: 5, format: "C" },
-    { id: "OT1017", due: 115, qty: 1000, cluster: 2, format: "A" },
-    { id: "OT1018", due: 120, qty: 700, cluster: 3, format: "B" },
-    { id: "OT1019", due: 125, qty: 1350, cluster: 4, format: "C" },
-    { id: "OT1020", due: 130, qty: 900, cluster: 1, format: "A" },
-    // Más OTs para llenar el calendario
-    { id: "OT1021", due: 140, qty: 1100, cluster: 5, format: "B" },
-    { id: "OT1022", due: 145, qty: 800, cluster: 2, format: "A" },
-    { id: "OT1023", due: 150, qty: 1250, cluster: 3, format: "C" },
-    { id: "OT1024", due: 155, qty: 950, cluster: 4, format: "B" },
-    { id: "OT1025", due: 160, qty: 1150, cluster: 1, format: "A" },
-  ],
+    {"id": "OT0", "due": 20, "cluster": 5, "products": {"A": 200, "B": 300}},
+    {"id": "OT1", "due": 20, "cluster": 4, "products": {"B": 250, "C": 150}},
+    {"id": "OT2", "due": 20, "cluster": 3, "products": {"A": 180, "B": 200}},
+    {"id": "OT3", "due": 20, "cluster": 2, "products": {"C": 400}},
+    {"id": "OT4", "due": 20, "cluster": 4, "products": {"A": 150, "C": 200}},
+    {"id": "OT5", "due": 40, "cluster": 1, "products": {"A": 500, "B": 300}},
+    {"id": "OT6", "due": 60, "cluster": 2, "products": {"C": 350, "B": 200}},
+    {"id": "OT7", "due": 60, "cluster": 5, "products": {"B": 400}},
+    {"id": "OT8", "due": 60, "cluster": 3, "products": {"A": 250, "B": 150, "C": 100}},
+    {"id": "OT9", "due": 60, "cluster": 4, "products": {"C": 450}},
+    {"id": "OT10", "due": 80, "cluster": 2, "products": {"B": 300, "A": 200}},
+    {"id": "OT11", "due": 80, "cluster": 5, "products": {"A": 600, "B": 400}},
+    {"id": "OT12", "due": 80, "cluster": 3, "products": {"C": 250, "A": 150}},
+    {"id": "OT13", "due": 80, "cluster": 4, "products": {"A": 400, "C": 300}},
+    {"id": "OT14", "due": 80, "cluster": 1, "products": {"B": 350}},
+    {"id": "OT15", "due": 100, "cluster": 5, "products": {"C": 500, "B": 200}},
+    {"id": "OT16", "due": 100, "cluster": 2, "products": {"A": 400}},
+    {"id": "OT17", "due": 100, "cluster": 3, "products": {"B": 250, "C": 150}},
+    {"id": "OT18", "due": 100, "cluster": 4, "products": {"C": 550, "A": 300}},
+    {"id": "OT19", "due": 100, "cluster": 1, "products": {"A": 350, "B": 250}},
+    {"id": "OT20", "due": 100, "cluster": 5, "products": {"B": 450, "A": 200}},
+    {"id": "OT21", "due": 100, "cluster": 2, "products": {"A": 300, "C": 250}},
+    {"id": "OT22", "due": 100, "cluster": 3, "products": {"C": 500}},
+    {"id": "OT23", "due": 100, "cluster": 4, "products": {"B": 380, "A": 220}},
+    {"id": "OT24", "due": 100, "cluster": 1, "products": {"A": 450, "B": 300, "C": 200}},
+],
   machines: {
     Linea_1: { capacity: 120, available_at: 0, last_format: null },
     Linea_2: { capacity: 90, available_at: 0, last_format: null },
@@ -80,6 +75,7 @@ const datosTesteo = {
 }
 
 // Function to convert backend schedule format to frontend block format
+// Supports both new format (PRODUCTION with ot_ids) and old format (OT)
 function convertScheduleToBlocks(schedule, startDatetime) {
   const startDate = new Date(startDatetime)
   
@@ -89,10 +85,32 @@ function convertScheduleToBlocks(schedule, startDatetime) {
     const startTime = new Date(startDate.getTime() + item.start * 60 * 60 * 1000)
     const endTime = new Date(startDate.getTime() + item.end * 60 * 60 * 1000)
     
-    if (item.type === 'OT') {
-      // Production block
+    if (item.type === 'PRODUCTION') {
+      // New format: Production block with multiple OTs
+      const product = item.product || item.format || 'N/A'
+      const otIds = item.ot_ids || []
+      const otIdsStr = otIds.length > 0 ? otIds.join(', ') : 'N/A'
+      
       return {
-        id: item.id,
+        id: `PROD-${item.machine}-${item.start}-${product}`,
+        machineId: item.machine,
+        type: 'PRODUCTION',
+        startTime: startTime.toISOString(),
+        endTime: endTime.toISOString(),
+        productName: `Producto ${product}`, // Product name
+        quantity: item.quantity || 0,
+        format: product,
+        product: product,
+        otIds: otIds,
+        otIdsStr: otIdsStr, // For display
+        onTime: item.on_time !== undefined ? item.on_time : true,
+        // Store original item for details modal
+        originalItem: item,
+      }
+    } else if (item.type === 'OT') {
+      // Old format: Single OT block (for compatibility)
+      return {
+        id: item.id || `OT-${item.machine}-${item.start}`,
         machineId: item.machine,
         type: 'PRODUCTION',
         startTime: startTime.toISOString(),
@@ -101,19 +119,24 @@ function convertScheduleToBlocks(schedule, startDatetime) {
         quantity: item.qty_cliente || item.qty || 0,
         format: item.format,
         due: item.due,
-        onTime: item.on_time,
+        onTime: item.on_time !== undefined ? item.on_time : true,
         qtyExtra: item.qty_extra || 0,
+        // Store original item for details modal
+        originalItem: item,
       }
     } else if (item.type === 'SETUP') {
       // Adjustment/Setup block
+      const format = item.format || 'N/A'
       return {
         id: `SETUP-${item.machine}-${item.start}`,
         machineId: item.machine,
         type: 'ADJUSTMENT',
         startTime: startTime.toISOString(),
         endTime: endTime.toISOString(),
-        description: `SETUP - Cambio de formato`,
-        format: item.format || 'N/A',
+        description: `SETUP - Cambio a formato ${format}`,
+        format: format,
+        // Store original item for details modal
+        originalItem: item,
       }
     }
     
@@ -194,6 +217,7 @@ export function useProductionData(date, viewMode, selectedMachine = null) {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [atrasos, setAtrasos] = useState([]) // Store delays information
 
   useEffect(() => {
     setLoading(true)
@@ -213,6 +237,32 @@ export function useProductionData(date, viewMode, selectedMachine = null) {
         
         const result = await fetchSchedule(requestData)
         let blocks = result.blocks || []
+        
+        // Store atrasos information for use in details modal
+        const atrasosInfo = result.summary?.atrasos || []
+        setAtrasos(atrasosInfo)
+        
+        // Add atrasos information to blocks that have OTs
+        blocks = blocks.map(block => {
+          if (block.type === 'PRODUCTION' && block.otIds && block.otIds.length > 0) {
+            // Find which OTs in this block are delayed
+            const delayedOTs = atrasosInfo
+              .filter(atraso => block.otIds.includes(atraso.ot_id))
+              .map(atraso => ({
+                otId: atraso.ot_id,
+                atrasoHoras: atraso.atraso_horas,
+                cluster: atraso.cluster,
+                due: atraso.due,
+                completion: atraso.completion,
+              }))
+            
+            return {
+              ...block,
+              delayedOTs: delayedOTs, // Add delayed OTs info
+            }
+          }
+          return block
+        })
         
         // Filter by machine if in individual view
         if (viewMode === 'INDIVIDUAL' && selectedMachine) {
@@ -258,6 +308,6 @@ export function useProductionData(date, viewMode, selectedMachine = null) {
     loadSchedule()
   }, [date, viewMode, selectedMachine])
 
-  return { data, loading, error }
+  return { data, loading, error, atrasos }
 }
 

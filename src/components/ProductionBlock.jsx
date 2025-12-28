@@ -19,7 +19,7 @@ function ProductionBlock({ block, onClick, hourHeight, topPosition, blockHeight,
   const isPartial = block.isPartial || false
   
   const bgColor = isProduction 
-    ? 'bg-blue-300 hover:bg-blue-400' 
+    ? 'bg-blue-300 hover:bg-blue-400'
     : 'bg-gray-400 hover:bg-gray-500'
   
   const textColor = isProduction ? 'text-gray-900' : 'text-gray-900'
@@ -56,6 +56,11 @@ function ProductionBlock({ block, onClick, hourHeight, topPosition, blockHeight,
       {isProduction && !isSmallBlock && (
         <div className="text-xs mt-0.5 opacity-90 truncate flex-shrink-0">
           {block.quantity ? `${block.quantity.toLocaleString()} unidades` : block.id}
+        </div>
+      )}
+      {isProduction && block.otIds && block.otIds.length > 0 && !isSmallBlock && (
+        <div className="text-xs mt-0.5 opacity-75 truncate flex-shrink-0">
+          OTs: {block.otIds.length > 2 ? `${block.otIds.slice(0, 2).join(', ')}...` : block.otIds.join(', ')}
         </div>
       )}
       {isProduction && block.format && !isSmallBlock && (
